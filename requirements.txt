@@ -1,0 +1,7 @@
+torch>=2.6
+transformers>=5.6
+peft>=0.21
+accelerate
+huggingface_hub
+fastapi
+uvicorn
