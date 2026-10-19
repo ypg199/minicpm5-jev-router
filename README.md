@@ -25,6 +25,35 @@ Like TypeSafe's [Jev](https://docs.typesafe.ai), it doesn't generate text. It re
 
 Kev and Jev numbers are the ones Kev publishes (fp32, their own decision head). Everything else was scored here with the same questions and the same letter-probability method in fp16. When2Call and transfer-v4 use Kev's frozen files and Kev's own metric code. All numbers are in [`results/scorecard.csv`](results/scorecard.csv).
 
+## What it looks like
+
+Real answers from the published adapter (`python examples/client.py`, one Kaggle T4). The tools offered are `get_card_statement(card_id, month)` and `block_card(card_id)`:
+
+| Request | Decision | Probability |
+|---|---|---|
+| "Show my September statement for card 4021." | `tool_call` | 0.988 |
+| "Show my statement." | `request_for_info` (which card, which month?) | 0.999 |
+| "Transfer 500 dollars to my brother." | `cannot_answer` (no tool for that) | 0.959 |
+| "What does APR mean?" | `direct` | 0.998 |
+| "I lost my card 4021, please block it" (`/v1/route`) | `block_card` | 0.992 |
+
+The same model answers Jev-style questions about a support message, three of them in about 250 ms:
+
+```text
+"Customer: I was charged twice for the same order and I want my money back."
+team    (choice)  billing      0.994
+refund  (yes/no)  yes          0.994
+urgency (score)   low 0.52 · normal 0.28 · high 0.21  -> confidence 0.0, hand it to a person
+```
+
+The last line is the point of calibrated probabilities: when the model isn't sure, it says so, and your code can escalate instead of guessing.
+
+## Why MiniCPM5
+
+- **A strong tool caller for its size.** Zero-shot, MiniCPM5-2B picked the right tool as often as Qwen3.5-9B (93.5% on BFCL when a tool fits), and its model card reports 66.6 on BFCL v4 against 56.8 for Qwen3.5-4B. Its weakness was deciding *not* to call a tool, which is exactly what fine-tuning can teach.
+- **Fast.** About 80 ms per decision on a free T4 in my zero-shot runs, against 187 ms for Qwen3.5-4B and 286 ms for Qwen3.5-9B. Part of that gap is that Qwen3.5's hybrid layers need extra kernels that weren't installed, which is itself a deployment cost.
+- **Light.** 2.5B parameters: about 5 GB in fp16, so it trains and serves on one 16 GB GPU, with official GGUF, GPTQ and MLX builds for laptops and smaller devices. It's a standard Llama architecture, so llama.cpp, vLLM, Ollama and MLX run it without custom code. The adapter itself is 101 MB.
+
 ## Run it
 
 ```bash
