@@ -2,6 +2,8 @@
 
 A 2.5B open Jev-style decision model for tool routing. A LoRA adapter on [MiniCPM5-2B](https://huggingface.co/openbmb/MiniCPM5-2B), trained for about two hours on one free Kaggle T4.
 
+**Model:** [YPG199/minicpm5-2b-jev-router](https://huggingface.co/YPG199/minicpm5-2b-jev-router) on Hugging Face
+
 Like TypeSafe's [Jev](https://docs.typesafe.ai), it doesn't generate text. It reads the state and a question with fixed options, and returns a probability for every option in one forward pass. Its main job: given the available tools and a user message, decide whether the assistant should **call a tool, ask for missing information, say it can't help, or answer directly**, and which tool to call.
 
 ## Results
@@ -27,7 +29,7 @@ Kev and Jev numbers are the ones Kev publishes (fp32, their own decision head). 
 
 ```bash
 pip install -r requirements.txt
-ROUTER_ADAPTER=<adapter on the Hub or a local folder> uvicorn router.server:app --port 8009
+ROUTER_ADAPTER=YPG199/minicpm5-2b-jev-router uvicorn router.server:app --port 8009
 python examples/client.py
 ```
 
