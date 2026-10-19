@@ -1,0 +1,12 @@
+model,params_b,source,bfcl_overall,when2call_dev,when2call_test,transfer_v4_dev,transfer_v4_test
+MiniCPM5-2B + LoRA router,2.5,this repo,0.811,0.687,0.707,0.712,0.739
+MiniCPM5-2B zero-shot,2.5,this repo,0.769,0.360,0.373,0.657,0.654
+MiniCPM5-1B zero-shot,1.1,this repo,0.729,0.433,0.420,0.625,0.652
+Qwen3.5-0.8B zero-shot,0.8,this repo,0.732,0.313,0.340,0.582,0.627
+Qwen3.5-4B zero-shot,4.0,this repo,0.845,0.547,0.527,0.712,0.745
+Qwen3.5-9B zero-shot,9.0,this repo,0.887,0.613,0.500,0.787,0.802
+Kev-0.8B,0.8,published,,0.167,0.133,0.648,0.697
+Kev-4B,4.0,published,,0.660,,0.817,0.838
+Kev-9B,9.0,published,,,0.680,0.820,0.852
+Kev-27B,27.0,published,,,,0.851,0.889
+Jev,,published,,0.760,,0.857,
